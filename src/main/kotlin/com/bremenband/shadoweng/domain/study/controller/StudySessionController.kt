@@ -26,7 +26,7 @@ class StudySessionController(private val studySessionService: StudySessionServic
     }
 
     @GetMapping("/recent")
-    fun getRecentSession(request: HttpServletRequest): ApiResponse<Any> {
+    fun getRecentSession(request: HttpServletRequest): ApiResponse<Any?> {
         val userId = request.getAttribute("userId") as Long
         return ApiResponse.ok(studySessionService.getRecentSession(userId))
     }

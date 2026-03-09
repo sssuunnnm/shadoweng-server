@@ -42,10 +42,10 @@ class StudySessionService(
             .orElseThrow { IllegalArgumentException("세션을 찾을 수 없습니다.") }
             .toResponse()
 
-    fun getRecentSession(userId: Long): StudySessionResponse =
+    fun getRecentSession(userId: Long): StudySessionResponse? =
         studySessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
-            .orElseThrow { IllegalArgumentException("세션이 없습니다.") }
-            .toResponse()
+            .orElse(null)
+            ?.toResponse()
 
     private fun StudySession.toResponse() = StudySessionResponse(
         sessionId = id,
