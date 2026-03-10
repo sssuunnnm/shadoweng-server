@@ -3,6 +3,7 @@ package com.bremenband.shadoweng.domain.report.service
 import com.bremenband.shadoweng.domain.report.dto.DailyReportResponse
 import com.bremenband.shadoweng.domain.report.dto.ReportResponse
 import com.bremenband.shadoweng.domain.report.entity.Report
+import com.bremenband.shadoweng.domain.report.mapper.ReportMapper
 import com.bremenband.shadoweng.domain.report.repository.ReportRepository
 import com.bremenband.shadoweng.domain.study.repository.EvaluationRepository
 import com.bremenband.shadoweng.domain.study.repository.StudySessionRepository
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
@@ -25,14 +25,12 @@ class ReportService(
         val session = studySessionRepository.findById(sessionId)
             .orElseThrow { IllegalArgumentException("세션을 찾을 수 없습니다.") }
 
-        // 이미 레포트 있으면 그대로 반환
         val existing = reportRepository.findBySessionId(sessionId)
-        if (existing.isPresent) return existing.get().toResponse()
+        if (existing.isPresent) return ReportMapper.toResponse(existing.get())
 
         val evaluations = evaluationRepository.findAllBySessionId(sessionId)
         if (evaluations.isEmpty()) throw IllegalArgumentException("평가 데이터가 없습니다.")
 
-        // 평균 계산
         fun avg(selector: (com.bremenband.shadoweng.domain.study.entity.Evaluation) -> BigDecimal?): BigDecimal {
             return evaluations.mapNotNull { selector(it) }
                 .takeIf { it.isNotEmpty() }
@@ -53,27 +51,14 @@ class ReportService(
                 pauseSimilarity = avg { it.pauseSimilarity }
             )
         )
-        return report.toResponse()
+        return ReportMapper.toResponse(report)
     }
 
     fun getReport(sessionId: Long): ReportResponse =
-        reportRepository.findBySessionId(sessionId)
-            .orElseThrow { IllegalArgumentException("레포트가 없습니다.") }
-            .toResponse()
-
-
-    private fun Report.toResponse() = ReportResponse(
-        reportId = id,
-        sessionId = session.id,
-        totalScore = totalScore,
-        wordAccuracy = wordAccuracy,
-        prosodyAndStress = prosodyAndStress,
-        wordRhythmScore = wordRhythmScore,
-        boundaryToneScore = boundaryToneScore,
-        dynamicStressScore = dynamicStressScore,
-        speedSimilarity = speedSimilarity,
-        pauseSimilarity = pauseSimilarity
-    )
+        ReportMapper.toResponse(
+            reportRepository.findBySessionId(sessionId)
+                .orElseThrow { IllegalArgumentException("레포트가 없습니다.") }
+        )
 
     fun getDailyReport(userId: Long): DailyReportResponse {
         val today = LocalDate.now()
@@ -85,7 +70,6 @@ class ReportService(
             .reduce { a, b -> a + b }
             .divide(BigDecimal(reports.size), 2, RoundingMode.HALF_UP)
 
-        // 스트릭: 최근 7일 학습 여부
         val weeklyStatus = (6 downTo 0).map { daysAgo ->
             val dayStart = today.minusDays(daysAgo.toLong()).atStartOfDay()
             val dayEnd = dayStart.plusDays(1)

@@ -2,6 +2,7 @@ package com.bremenband.shadoweng.domain.video.service
 
 import com.bremenband.shadoweng.domain.video.dto.VideoResponse
 import com.bremenband.shadoweng.domain.video.entity.Video
+import com.bremenband.shadoweng.domain.video.mapper.VideoMapper
 import com.bremenband.shadoweng.domain.video.repository.VideoRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,14 +29,7 @@ class VideoService(private val videoRepository: VideoRepository) {
             )
         }
 
-        return VideoResponse(
-            videoId = video.videoId,
-            title = video.title,
-            thumbnailUrl = video.thumbnailUrl,
-            duration = video.duration,
-            channelTitle = video.channelTitle,
-            embedUrl = video.embedUrl
-        )
+        return VideoMapper.toResponse(video)
     }
 
     private fun extractVideoId(url: String): String? {

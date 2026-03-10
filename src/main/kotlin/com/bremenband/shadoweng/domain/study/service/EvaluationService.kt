@@ -3,6 +3,7 @@ package com.bremenband.shadoweng.domain.study.service
 import com.bremenband.shadoweng.domain.study.dto.CreateEvaluationRequest
 import com.bremenband.shadoweng.domain.study.dto.EvaluationResponse
 import com.bremenband.shadoweng.domain.study.entity.Evaluation
+import com.bremenband.shadoweng.domain.study.mapper.EvaluationMapper
 import com.bremenband.shadoweng.domain.study.repository.EvaluationRepository
 import com.bremenband.shadoweng.domain.study.repository.SentenceRepository
 import com.bremenband.shadoweng.domain.study.repository.StudySessionRepository
@@ -40,21 +41,6 @@ class EvaluationService(
                 pauseSimilarity = BigDecimal("87.00")
             )
         )
-        return evaluation.toResponse()
+        return EvaluationMapper.toResponse(evaluation)
     }
-
-    private fun Evaluation.toResponse() = EvaluationResponse(
-        evaluationId = id,
-        sessionId = session.id,
-        sentenceId = sentence.id,
-        userTranscription = userTranscription,
-        totalScore = totalScore,
-        wordAccuracy = wordAccuracy,
-        prosodyAndStress = prosodyAndStress,
-        wordRhythmScore = wordRhythmScore,
-        boundaryToneScore = boundaryToneScore,
-        dynamicStressScore = dynamicStressScore,
-        speedSimilarity = speedSimilarity,
-        pauseSimilarity = pauseSimilarity
-    )
 }

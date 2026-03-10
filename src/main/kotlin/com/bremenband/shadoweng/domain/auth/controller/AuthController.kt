@@ -1,5 +1,6 @@
 package com.bremenband.shadoweng.domain.auth.controller
 
+import com.bremenband.shadoweng.domain.auth.dto.GuestLoginResponse
 import com.bremenband.shadoweng.domain.auth.service.AuthService
 import com.bremenband.shadoweng.global.response.ApiResponse
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,6 +12,6 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(private val authService: AuthService) {
 
     @PostMapping("/login/guest")
-    fun guestLogin(): ApiResponse<Any> =
+    fun guestLogin(): ApiResponse<GuestLoginResponse> =
         ApiResponse.ok(authService.guestLogin())
 }

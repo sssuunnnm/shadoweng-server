@@ -1,5 +1,6 @@
 package com.bremenband.shadoweng.domain.video.controller
 
+import com.bremenband.shadoweng.domain.video.dto.VideoResponse
 import com.bremenband.shadoweng.domain.video.service.VideoService
 import com.bremenband.shadoweng.global.response.ApiResponse
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController
 class VideoController(private val videoService: VideoService) {
 
     @GetMapping("/youtube")
-    fun getVideo(@RequestParam url: String): ApiResponse<Any> =
+    fun getVideo(
+        @RequestParam url: String
+    ): ApiResponse<VideoResponse> =
         ApiResponse.ok(videoService.getOrCreateVideo(url))
 }

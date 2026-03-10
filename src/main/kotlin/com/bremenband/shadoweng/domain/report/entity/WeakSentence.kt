@@ -8,6 +8,10 @@ import java.time.LocalDateTime
 @Table(name = "weak_sentences")
 class WeakSentence(
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_id", nullable = false)
     val report: Report,
@@ -19,7 +23,4 @@ class WeakSentence(
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0
 )
