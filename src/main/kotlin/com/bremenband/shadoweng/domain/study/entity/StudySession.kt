@@ -9,6 +9,10 @@ import java.time.LocalDateTime
 @Table(name = "study_sessions")
 class StudySession(
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "video_id", nullable = false)
     val video: Video,
@@ -18,10 +22,10 @@ class StudySession(
     val user: User,
 
     @Column(name = "start_sec", nullable = false)
-    val startSec: Int,
+    val startSec: Double,
 
     @Column(name = "end_sec", nullable = false)
-    val endSec: Int,
+    val endSec: Double,
 
     @Column(name = "progress_rate", nullable = false)
     val progressRate: Int = 0,
@@ -35,7 +39,5 @@ class StudySession(
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now(),
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0
+
 )

@@ -5,8 +5,8 @@ data class StudySessionResponse(
     val videoId: String,
     val title: String,
     val thumbnailUrl: String?,
-    val startSec: Int,
-    val endSec: Int,
+    val startSec: Double,
+    val endSec: Double,
     val progressRate: Int,
     val status: String
 )

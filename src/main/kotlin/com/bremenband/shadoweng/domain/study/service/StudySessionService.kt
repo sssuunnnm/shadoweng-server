@@ -22,7 +22,7 @@ class StudySessionService(
     fun createSession(userId: Long, request: CreateStudySessionRequest): StudySessionResponse {
         val user = userRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
-        val video = videoRepository.findById(request.videoId)
+        val video = videoRepository.findById(request.embedUrl)
             .orElseThrow { IllegalArgumentException("영상을 찾을 수 없습니다.") }
 
         val session = studySessionRepository.save(

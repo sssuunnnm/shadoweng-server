@@ -21,7 +21,7 @@ class StudySessionController(
     private val evaluationService: EvaluationService
 ) {
 
-    @PostMapping("/")
+    @PostMapping
     fun createSession(
         request: HttpServletRequest,
         @RequestBody body: CreateStudySessionRequest
@@ -30,7 +30,7 @@ class StudySessionController(
         return ApiResponse.ok(studySessionService.createSession(userId, body))
     }
 
-    @GetMapping("/")
+    @GetMapping
     fun getSessions(
         request: HttpServletRequest
     ): ApiResponse<ActiveSessionListResponse> {
