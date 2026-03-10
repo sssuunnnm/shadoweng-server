@@ -2,6 +2,7 @@ package com.bremenband.shadoweng.domain.study.controller
 
 import com.bremenband.shadoweng.domain.report.dto.ReportResponse
 import com.bremenband.shadoweng.domain.report.service.ReportService
+import com.bremenband.shadoweng.domain.study.dto.ActiveSessionListResponse
 import com.bremenband.shadoweng.domain.study.dto.CreateEvaluationRequest
 import com.bremenband.shadoweng.domain.study.dto.CreateStudySessionRequest
 import com.bremenband.shadoweng.domain.study.dto.EvaluationResponse
@@ -20,7 +21,7 @@ class StudySessionController(
     private val evaluationService: EvaluationService
 ) {
 
-    @PostMapping
+    @PostMapping("/")
     fun createSession(
         request: HttpServletRequest,
         @RequestBody body: CreateStudySessionRequest
@@ -29,10 +30,10 @@ class StudySessionController(
         return ApiResponse.ok(studySessionService.createSession(userId, body))
     }
 
-    @GetMapping
+    @GetMapping("/")
     fun getSessions(
         request: HttpServletRequest
-    ): ApiResponse<List<StudySessionResponse>> {
+    ): ApiResponse<ActiveSessionListResponse> {
         val userId = request.getAttribute("userId") as Long
         return ApiResponse.ok(studySessionService.getSessions(userId))
     }

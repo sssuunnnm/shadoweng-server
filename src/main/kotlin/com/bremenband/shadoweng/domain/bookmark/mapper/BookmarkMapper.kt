@@ -5,8 +5,8 @@ import com.bremenband.shadoweng.domain.bookmark.entity.Bookmark
 
 object BookmarkMapper {
     fun toResponse(bookmark: Bookmark) = BookmarkResponse(
-        bookmarkId = bookmark.id,
         sentenceId = bookmark.sentence.id,
-        content = bookmark.sentence.content
+        sentence = bookmark.sentence.content,
+        sessionId = bookmark.sentence.session.id
     )
 }

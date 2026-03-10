@@ -6,6 +6,7 @@ import com.bremenband.shadoweng.domain.study.entity.StudySession
 import com.bremenband.shadoweng.domain.study.mapper.StudySessionMapper
 import com.bremenband.shadoweng.domain.study.repository.StudySessionRepository
 import com.bremenband.shadoweng.domain.user.repository.UserRepository
+import com.bremenband.shadoweng.domain.study.dto.ActiveSessionListResponse
 import com.bremenband.shadoweng.domain.video.repository.VideoRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,8 +36,11 @@ class StudySessionService(
         return StudySessionMapper.toResponse(session)
     }
 
-    fun getSessions(userId: Long): List<StudySessionResponse> =
-        studySessionRepository.findAllByUserId(userId).map { StudySessionMapper.toResponse(it) }
+    fun getSessions(userId: Long): ActiveSessionListResponse =
+        ActiveSessionListResponse(
+            ActiveSessions = studySessionRepository.findAllByUserId(userId)
+                .map { StudySessionMapper.toActiveSessionResponse(it) }
+        )
 
     fun getSession(sessionId: Long): StudySessionResponse =
         StudySessionMapper.toResponse(

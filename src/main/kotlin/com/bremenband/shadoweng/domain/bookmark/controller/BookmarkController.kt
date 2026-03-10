@@ -1,5 +1,6 @@
 package com.bremenband.shadoweng.domain.bookmark.controller
 
+import com.bremenband.shadoweng.domain.bookmark.dto.BookmarkListResponse
 import com.bremenband.shadoweng.domain.bookmark.dto.BookmarkResponse
 import com.bremenband.shadoweng.domain.bookmark.service.BookmarkService
 import com.bremenband.shadoweng.global.response.ApiResponse
@@ -13,9 +14,9 @@ class BookmarkController(private val bookmarkService: BookmarkService) {
     @GetMapping("/bookmarks")
     fun getBookmarks(
         request: HttpServletRequest
-    ): ApiResponse<List<BookmarkResponse>> {
+    ): ApiResponse<BookmarkListResponse> {
         val userId = request.getAttribute("userId") as Long
-        return ApiResponse.ok(bookmarkService.getBookmarks(userId))
+        return ApiResponse.ok(BookmarkListResponse(bookmarkService.getBookmarks(userId)))
     }
 
     @PatchMapping("/sentences/{sentenceId}")

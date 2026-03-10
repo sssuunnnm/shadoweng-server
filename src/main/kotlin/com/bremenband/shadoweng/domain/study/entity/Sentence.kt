@@ -6,6 +6,9 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "sentences")
 class Sentence(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
@@ -25,8 +28,4 @@ class Sentence(
 
     @Column(name = "created_at")
     val createdAt: LocalDateTime? = null,
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0
 )
