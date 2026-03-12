@@ -6,6 +6,7 @@ import com.bremenband.shadoweng.domain.study.dto.ActiveSessionListResponse
 import com.bremenband.shadoweng.domain.study.dto.CreateEvaluationRequest
 import com.bremenband.shadoweng.domain.study.dto.CreateStudySessionRequest
 import com.bremenband.shadoweng.domain.study.dto.EvaluationResponse
+import com.bremenband.shadoweng.domain.study.dto.SentenceDetailResponse
 import com.bremenband.shadoweng.domain.study.dto.StudySessionResponse
 import com.bremenband.shadoweng.domain.study.service.EvaluationService
 import com.bremenband.shadoweng.domain.study.service.StudySessionService
@@ -70,4 +71,12 @@ class StudySessionController(
         @RequestBody request: CreateEvaluationRequest
     ): ApiResponse<EvaluationResponse> =
         ApiResponse.ok(evaluationService.createEvaluation(sessionId, request))
+
+    @GetMapping("/{sessionId}/sentences/{sentenceId}")
+    fun getSentence(
+        @PathVariable sessionId: Long,
+        @PathVariable sentenceId: Long,
+        @RequestParam step: Int
+    ): ApiResponse<SentenceDetailResponse> =
+        ApiResponse.ok(studySessionService.getSentence(sessionId, sentenceId, step))
 }

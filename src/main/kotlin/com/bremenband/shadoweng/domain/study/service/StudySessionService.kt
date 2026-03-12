@@ -7,6 +7,7 @@ import com.bremenband.shadoweng.domain.study.mapper.StudySessionMapper
 import com.bremenband.shadoweng.domain.study.repository.StudySessionRepository
 import com.bremenband.shadoweng.domain.user.repository.UserRepository
 import com.bremenband.shadoweng.domain.study.dto.ActiveSessionListResponse
+import com.bremenband.shadoweng.domain.study.dto.SentenceDetailResponse
 import com.bremenband.shadoweng.domain.study.entity.Sentence
 import com.bremenband.shadoweng.domain.study.repository.SentenceRepository
 import com.bremenband.shadoweng.domain.video.repository.VideoRepository
@@ -37,19 +38,27 @@ class StudySessionService(
             )
         )
 
-        listOf(
-            Sentence(
-                session = session,
-                content = "Mock sentence one for testing.",
-                startSec = 0,
-                endSec = 4,
-                durationSec = 4
-            ),
+        val sentences = listOf(
+            Sentence(session = session, content = "Mock sentence one for testing.", startSec = 0, endSec = 4, durationSec = 4),
             Sentence(session = session, content = "Mock sentence two for testing.", startSec = 5, endSec = 9, durationSec = 4),
             Sentence(session = session, content = "Mock sentence three for testing.", startSec = 10, endSec = 14, durationSec = 4),
-        ).forEach { sentenceRepository.save(it) }
+        ).map { sentenceRepository.save(it) }
 
-        return StudySessionMapper.toResponse(session)
+        return StudySessionMapper.toResponse(session, sentences)
+    }
+
+    fun getSession(sessionId: Long): StudySessionResponse {
+        val session = studySessionRepository.findById(sessionId)
+            .orElseThrow { IllegalArgumentException("세션을 찾을 수 없습니다.") }
+        val sentences = sentenceRepository.findAllBySessionId(sessionId)
+        return StudySessionMapper.toResponse(session, sentences)
+    }
+
+    fun getRecentSession(userId: Long): StudySessionResponse? {
+        val session = studySessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
+            .orElse(null) ?: return null
+        val sentences = sentenceRepository.findAllBySessionId(session.id)
+        return StudySessionMapper.toResponse(session, sentences)
     }
 
     fun getSessions(userId: Long): ActiveSessionListResponse =
@@ -58,14 +67,19 @@ class StudySessionService(
                 .map { StudySessionMapper.toActiveSessionResponse(it) }
         )
 
-    fun getSession(sessionId: Long): StudySessionResponse =
-        StudySessionMapper.toResponse(
-            studySessionRepository.findById(sessionId)
-                .orElseThrow { IllegalArgumentException("세션을 찾을 수 없습니다.") }
+    fun getSentence(sessionId: Long, sentenceId: Long, step: Int): SentenceDetailResponse {
+        val sentence = sentenceRepository.findById(sentenceId)
+            .orElseThrow { IllegalArgumentException("문장을 찾을 수 없습니다.") }
+        return SentenceDetailResponse(
+            step = step,
+            sessionId = sessionId,
+            sentenceId = sentence.id,
+            sentence = sentence.content,
+            hiddenSentence = null,
+            startSec = sentence.startSec.toDouble(),
+            endSec = sentence.endSec.toDouble(),
+            durationSec = sentence.durationSec.toDouble(),
+            studyCount = sentence.studyCount
         )
-
-    fun getRecentSession(userId: Long): StudySessionResponse? =
-        studySessionRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
-            .orElse(null)
-            ?.let { StudySessionMapper.toResponse(it) }
+    }
 }

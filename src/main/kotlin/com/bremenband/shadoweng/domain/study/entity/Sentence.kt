@@ -26,6 +26,9 @@ class Sentence(
     @Column(name = "duration_sec", nullable = false)
     val durationSec: Int,
 
+    @Column(name = "study_count", nullable = false)
+    var studyCount: Int = 0,
+
     @Column(name = "created_at")
     val createdAt: LocalDateTime? = null,
 )

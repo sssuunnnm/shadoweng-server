@@ -1,21 +1,30 @@
 package com.bremenband.shadoweng.domain.study.mapper
 
-import com.bremenband.shadoweng.domain.study.dto.StudySessionResponse
+import com.bremenband.shadoweng.domain.study.dto.*
+import com.bremenband.shadoweng.domain.study.entity.Sentence
 import com.bremenband.shadoweng.domain.study.entity.StudySession
-import com.bremenband.shadoweng.domain.study.dto.ActiveSessionResponse
-import com.bremenband.shadoweng.domain.study.dto.ThumbnailResponse
-
 
 object StudySessionMapper {
-    fun toResponse(session: StudySession) = StudySessionResponse(
+    fun toResponse(session: StudySession, sentences: List<Sentence>) = StudySessionResponse(
         sessionId = session.id,
-        videoId = session.video.videoId,
-        title = session.video.title,
-        thumbnailUrl = session.video.thumbnailUrl,
-        startSec = session.startSec,
-        endSec = session.endSec,
-        progressRate = session.progressRate,
-        status = session.status
+        videoData = VideoData(
+            videoId = session.video.videoId,
+            embedUrl = session.video.embedUrl,
+            title = session.video.title,
+            thumbnailUrl = session.video.thumbnailUrl,
+            duration = session.video.duration,
+            channelTitle = session.video.channelTitle
+        ),
+        sentencesData = sentences.map { s ->
+            SentenceData(
+                sentenceId = s.id,
+                sentence = s.content,
+                startSec = s.startSec.toDouble(),
+                endSec = s.endSec.toDouble(),
+                durationSec = s.durationSec.toDouble(),
+                studyCount = s.studyCount
+            )
+        }
     )
 
     fun toActiveSessionResponse(session: StudySession) = ActiveSessionResponse(
